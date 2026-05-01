@@ -8,6 +8,18 @@ Under the hood it uses [faster-whisper](https://github.com/SYSTRAN/faster-whispe
 
 ---
 
+## 🔒 Stays on your computer
+
+Voice-Command and all its dependencies are local tools that run on your hardware. Speech-to-text, text-to-speech, audio capture, audio playback — all of it happens on your machine. **Voice-Command itself never reaches out to the internet on its own.** Your AI may reach out (Claude pings Anthropic, ChatGPT pings OpenAI, and so on), and the AI may use other tools that reach out (web search, email connectors), but the voice layer adds zero outbound traffic. For a fully-offline setup, pair it with a local model in LM Studio.
+
+---
+
+## 🖥️ Platform support
+
+**Currently Windows-only.** For **Linux**, see the upstream [`AIWander/voice`](https://github.com/AIWander/voice) repo — there's a community fork there with Linux support. **macOS** support is coming.
+
+---
+
 ## Works with
 
 Voice-Command is a STDIO MCP server, so it plugs into any AI client that speaks MCP. That includes:
@@ -35,28 +47,9 @@ It doesn't care which model is on the other end. If your AI of choice can call M
 
 ---
 
-## The easy way to install: ask your AI to do it
+## How to end a session
 
-This is the whole point. You shouldn't need a CS degree to get this running.
-
-If you have **Claude Desktop with [`ops`](https://github.com/AIWander/ops) installed**, **Cowork**, **Claude Code**, **Codex CLI**, or **Gemini CLI** open right now, copy this and paste it to your AI:
-
-> `https://github.com/AIWander/Voice-Command` — Can you install this MCP for us to use here and the voice listening server, and make me a new `.bat` to call it and direct me to do what I need to do to get both sides running, then we can have a talk.
-
-Your AI will:
-
-1. Grab the right `voice-mcp.exe` for your computer (ARM64 or x64) from the [latest release](https://github.com/AIWander/Voice-Command/releases/latest)
-2. Drop it somewhere sensible (usually `C:\CPC\servers\`)
-3. Wire it into your AI client's MCP config file — your existing setup is preserved, and a timestamped backup is made first, so nothing breaks
-4. Clone this repo and install the Python pieces
-5. Write you a `START_VOICE_SERVER.bat` you can double-click whenever you want to talk
-6. Walk you through restarting your AI client and starting the listener
-
-Then you're talking. Literally.
-
-> **Don't have an operator MCP yet?** [`ops`](https://github.com/AIWander/ops) is the recommended one — public, lightweight, does file/shell work for any AI you want to give hands to. Install ops first, then come back and paste the prompt above. If you have `local`, `programmer`, or another operator MCP already, those work too.
-
-If your AI doesn't have access to your filesystem and shell, scroll down to **Manual installation** below.
+Just tell the AI you're done — *"I'm done talking,"* *"let's talk later,"* *"bye for now,"* anything in that family. Or hit the stop button in your AI's UI. Both work; saying it out loud is more graceful.
 
 ---
 
@@ -66,7 +59,7 @@ Anything your AI has the tools to do. A few examples to give you the shape of it
 
 - *"Check my calendar for tomorrow and read me what's on it."* → uses your Google Calendar connector
 - *"Search the web for the latest on [topic] and summarize."* → uses web search
-- *"Open my downloads folder and tell me what's in there."* → uses local filesystem access
+- *"Read me the README in this folder."* → uses local filesystem
 - *"Find the file we were editing yesterday and fix the bug we talked about."* → uses filesystem + memory of past chats
 - *"Send an email to Sarah saying I'll be ten minutes late."* → uses your Gmail connector
 - *"Run the deploy script and tell me when it's done."* → uses shell access
@@ -75,23 +68,57 @@ The voice layer doesn't add capabilities — it just changes how you reach them.
 
 ---
 
-## What's it actually doing under the hood?
+## Pairs nicely with
 
-A few useful things, in plain English:
+Voice-Command is most useful when your AI also has hands. These three companion MCPs are all **local tools** that live on your computer, all callable by voice once Voice-Command is wired up:
 
-- **It listens to you.** Speech-to-text via faster-whisper, running on your machine. Your voice stays local — it doesn't get sent anywhere.
-- **It cleans up your audio.** A simple filter trims out hum and hiss so it understands you better, even with a cheap mic.
-- **It picks up on tone.** Excited? Tired? Hesitant? It guesses from things like volume, pitch shifts, and pacing, and passes that along to the AI.
-- **It runs your commands.** Voice triggers anything the AI can normally do — tools, connectors, MCPs, file access, the works.
-- **It narrates as it works.** The AI tells you what it's doing while it's doing it, not just at the end. You hear the work happen.
-- **The beeps are your turn-token.** Series of beeps means the AI's listening — your move. You'll hear them again when the AI's done with a turn and ready for the next.
-- **It knows when you're done talking.** Stops recording after a beat of silence (configurable, default 4 seconds).
-- **It cleans up trailing words.** "Send this," "okay done," "stop" — these get stripped automatically so you can talk like a human.
+- **[`ops`](https://github.com/AIWander/ops)** — file and shell operations: read/write files, run commands, manage processes
+- **[`hands`](https://github.com/AIWander/hands)** — browser automation, Windows UI control, vision/OCR
+- **[`workflow`](https://github.com/AIWander/workflow)** — API discovery and replay, credential vault, scheduled flows
+
+Install any combination. Voice-Command is the mouth and ears; these are the rest of the body. All of them run locally, none of them reach out unless the AI explicitly asks them to.
+
+---
+
+## The easy way to install: ask your AI to do it
+
+This is the whole point. You shouldn't need a CS degree to get this running.
+
+If you have **Claude Desktop with [`ops`](https://github.com/AIWander/ops) installed**, **Cowork**, **Claude Code**, **Codex CLI**, or **Gemini CLI** open right now, copy this and paste it to your AI:
+
+> `https://github.com/AIWander/Voice-Command` — Can you install this MCP for us to use here, set up the voice listening server, and make me a `.bat` to launch it. Walk me through any restart or step I need to do. **Tell me clearly when everything's installed and we're ready to talk.**
+
+Your AI will:
+
+1. Grab the right `voice-mcp.exe` for your computer (ARM64 or x64) from the [latest release](https://github.com/AIWander/Voice-Command/releases/latest)
+2. Drop it somewhere sensible (usually `C:\CPC\servers\`)
+3. Wire it into your AI client's MCP config file — your existing setup is preserved, and a timestamped backup is made first, so nothing breaks
+4. Clone this repo and install the Python pieces
+5. Write you a `START_VOICE_SERVER.bat` you can double-click whenever you want to talk
+6. Walk you through restarting your AI client and starting the listener
+7. Tell you when everything's ready
+
+Then you're talking. Literally.
+
+> **After install — starting voice mode is just asking for it.** Once everything's running and you've restarted your AI client, you don't need to paste anything else. On **Claude chat** or **Cowork**, just ask the AI *"let's talk"* or *"start voice mode"* — it'll fire up the listening loop and you'll hear the beeps. Same on other MCP-capable clients.
+
+> **Don't have an operator MCP yet?** [`ops`](https://github.com/AIWander/ops) is the recommended one — public, lightweight, does file/shell work for any AI you want to give hands to. Install ops first, then come back and paste the prompt above. If you have `local`, `programmer`, or another operator MCP already, those work too.
+
+If your AI doesn't have access to your filesystem and shell, scroll down to **Manual installation** below.
+
+---
+
+## What it looks like when it's running
+
+<!-- TODO: drop screenshot of voice_server.py running into docs/ and update this image link -->
+
+> 📸 *Screenshot of the voice listening server in action — coming soon. Once you've installed Voice-Command, the server window will look something like this, with a beep cue when it's your turn and a live RMS readout while you talk.*
 
 ---
 
 ## What you'll need on your computer
 
+- **Windows 10 or 11** (Linux/macOS support not yet — see [Platform support](#-platform-support) above)
 - **Python 3.11 or newer** — [download here](https://www.python.org/downloads/)
 - **A microphone** — built-in or USB, doesn't need to be fancy
 - **PortAudio** — a library that lets Python use your mic; usually installs automatically
@@ -109,17 +136,15 @@ Clone the repo, then:
 pip install -r requirements.txt
 ```
 
-### Getting PortAudio working
+### PortAudio
 
-- **Windows:** `pip install pyaudio` usually just works. If it complains, grab a wheel from [here](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio).
-- **macOS:** `brew install portaudio && pip install pyaudio`
-- **Linux:** `sudo apt install portaudio19-dev && pip install pyaudio`
+`pip install pyaudio` usually just works on Windows. If it complains, grab a wheel from [the unofficial PyAudio wheels page](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio).
 
-### Getting ffmpeg working
+### ffmpeg
 
-- **Windows:** `winget install Gyan.FFmpeg`, or download from [ffmpeg.org](https://ffmpeg.org/download.html). Make sure it's on your PATH, or set the `VOICE_FFMPEG_PATH` environment variable to point at it.
-- **macOS:** `brew install ffmpeg`
-- **Linux:** `sudo apt install ffmpeg`
+`winget install Gyan.FFmpeg`, or download from [ffmpeg.org](https://ffmpeg.org/download.html). Make sure it's on your PATH, or set the `VOICE_FFMPEG_PATH` environment variable to point at it.
+
+> Setting up on Linux? The upstream [`AIWander/voice`](https://github.com/AIWander/voice) repo has a Linux fork with the equivalent install steps.
 
 ---
 
@@ -131,7 +156,7 @@ Start the voice server:
 python voice_server.py
 ```
 
-It runs at `http://localhost:5123`. On Windows you can also just double-click `START_VOICE_SERVER.bat`.
+It runs at `http://localhost:5123`. You can also just double-click `START_VOICE_SERVER.bat`.
 
 You mostly won't touch the endpoints directly — the AI calls them for you — but here they are:
 
