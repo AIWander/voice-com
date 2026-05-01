@@ -10,6 +10,22 @@ Under the hood it uses [faster-whisper](https://github.com/SYSTRAN/faster-whispe
 
 ---
 
+## Works with
+
+Voice-Command is a STDIO MCP server, so it plugs into any AI client that speaks MCP. That includes:
+
+- **Claude** (chat) — Claude Desktop and the web app
+- **Cowork** — Claude's desktop agent
+- **Claude Code** — the CLI coding agent
+- **Codex CLI** — OpenAI / GPT
+- **Gemini CLI** — Google
+- **LM Studio** — for running local models (Llama, Qwen, Mistral, whatever you've loaded up)
+- **Anything else that can call a STDIO MCP server** — the protocol is the only requirement
+
+It doesn't care which model is on the other end. If your AI of choice can call MCP tools, you can talk to it.
+
+---
+
 ## How a turn works
 
 1. **You hear a series of beeps.** That's Claude's "I'm listening, your turn" cue.
@@ -25,7 +41,7 @@ Under the hood it uses [faster-whisper](https://github.com/SYSTRAN/faster-whispe
 
 This is the whole point. You shouldn't need a CS degree to get this running.
 
-If you have **Claude Desktop with [`ops`](https://github.com/AIWander/ops) installed**, **Claude Code**, **Codex CLI**, or **Gemini CLI** open right now, copy this and paste it to your AI:
+If you have **Claude Desktop with [`ops`](https://github.com/AIWander/ops) installed**, **Cowork**, **Claude Code**, **Codex CLI**, or **Gemini CLI** open right now, copy this and paste it to your AI:
 
 > `https://github.com/AIWander/Voice-Command` — Can you install this MCP for us to use here and the voice listening server, and make me a new `.bat` to call it and direct me to do what I need to do to get both sides running, then we can have a talk.
 
