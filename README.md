@@ -1,12 +1,23 @@
 # Voice-Command
 
-**Talk to Claude. Hear Claude talk back.**
+**Talk to Claude. Hear it work.**
 
-Voice-Command turns Claude Desktop into a voice assistant — you speak, it listens, it answers out loud. No more typing into a chat box when you'd rather just have a conversation.
+Voice-Command lets you voice-control Claude Desktop end-to-end. You say what you want done — Claude does it, using whatever tools, connectors, and MCPs it has access to — and narrates what it's doing as it goes. The "Command" isn't a euphemism. **Anything the AI can do, you can ask for out loud:** search the web, check your calendar, send email through your connectors, write or fix code, edit files on your computer, run shell commands, kick off automations. If Claude can do it typed, you can do it spoken.
 
 Under the hood it uses [faster-whisper](https://github.com/SYSTRAN/faster-whisper) to understand what you say (running fully on your own computer — your voice doesn't go to the cloud) and [edge-tts](https://github.com/rany2/edge-tts) to speak responses back. It also reads the *feel* of how you say things — excited, hesitant, frustrated — and passes that along so Claude can respond more naturally.
 
 > **Heads up:** This is the active development copy of [`AIWander/voice`](https://github.com/AIWander/voice). If you just want a stable, tested setup, install from there. This repo is where new features get tried before they ship.
+
+---
+
+## How a turn works
+
+1. **You hear a series of beeps.** That's Claude's "I'm listening, your turn" cue.
+2. **You talk.** Say what you want done. Anything Claude has the tools to handle counts.
+3. **Claude works — and tells you out loud what it's doing as it goes.** ("Checking your calendar… found three events tomorrow… drafting the reply…")
+4. **You hear the beeps again.** Claude's done with that turn. Your move.
+
+**One thing to know up front:** the audio flow is one-way at a time. You can't cut Claude off mid-sentence with your voice — once Claude is talking or working, the only way to interrupt is to click or tap directly in the AI's UI. The beeps are the only voice handoff signal.
 
 ---
 
@@ -35,17 +46,33 @@ If your AI doesn't have access to your filesystem and shell, scroll down to **Ma
 
 ---
 
-## What's it actually doing?
+## What you can actually ask for
+
+Anything Claude has the tools to do. A few examples to give you the shape of it:
+
+- *"Check my calendar for tomorrow and read me what's on it."* → uses your Google Calendar connector
+- *"Search the web for the latest on [topic] and summarize."* → uses web search
+- *"Open my downloads folder and tell me what's in there."* → uses local filesystem access
+- *"Find the file we were editing yesterday and fix the bug we talked about."* → uses filesystem + memory of past chats
+- *"Send an email to Sarah saying I'll be ten minutes late."* → uses your Gmail connector
+- *"Run the deploy script and tell me when it's done."* → uses shell access
+
+The voice layer doesn't add capabilities — it just changes how you reach them. Whatever connectors, MCPs, and tools you've already hooked up to Claude all work the same. You're just using your mouth instead of your keyboard.
+
+---
+
+## What's it actually doing under the hood?
 
 A few useful things, in plain English:
 
 - **It listens to you.** Speech-to-text via faster-whisper, running on your machine. Your voice stays local — it doesn't get sent anywhere.
 - **It cleans up your audio.** A simple filter trims out hum and hiss so it understands you better, even with a cheap mic.
-- **It picks up on tone.** Excited? Tired? Hesitant? It guesses from things like volume, pitch shifts, and pacing — and passes that along to Claude.
-- **It beeps when it's listening.** Three quick beeps when recording starts so you know it's your turn to talk.
-- **It knows when you're done.** Stops recording after a beat of silence (configurable, default 4 seconds).
+- **It picks up on tone.** Excited? Tired? Hesitant? It guesses from things like volume, pitch shifts, and pacing, and passes that along to Claude.
+- **It runs your commands.** Voice triggers anything Claude can normally do — tools, connectors, MCPs, file access, the works.
+- **It narrates as it works.** Claude tells you what it's doing while it's doing it, not just at the end. You hear the work happen.
+- **The beeps are your turn-token.** Series of beeps means Claude's listening — your move. You'll hear them again when Claude's done with a turn and ready for the next.
+- **It knows when you're done talking.** Stops recording after a beat of silence (configurable, default 4 seconds).
 - **It cleans up trailing words.** "Send this," "okay done," "stop" — these get stripped automatically so you can talk like a human.
-- **It speaks responses back.** Edge-tts reads Claude's replies out loud.
 
 ---
 
@@ -82,7 +109,7 @@ pip install -r requirements.txt
 
 ---
 
-## Using it
+## Running it
 
 Start the voice server:
 
