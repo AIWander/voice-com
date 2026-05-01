@@ -102,6 +102,10 @@ Then you're talking. Literally.
 
 > **After install — starting voice mode is just asking for it.** Once everything's running and you've restarted your AI client, you don't need to paste anything else. On **Claude chat** or **Cowork**, just ask the AI *"let's talk"* or *"start voice mode"* — it'll fire up the listening loop and you'll hear the beeps. Same on other MCP-capable clients.
 
+> **Don't forget the connector toggle.** In Claude Desktop and Cowork, MCP connectors have an on/off switch in **Settings → Connectors**. Make sure the voice MCP entry is toggled **on** after the restart, otherwise the AI won't see the speak/listen tools.
+
+> **No Python on the machine?** Voice-Command's listening server runs on Python 3.11. If you don't have Python installed, your AI can fetch it for you using [`ops`](https://github.com/AIWander/ops) — just ask. Without Python, the AI can still **talk** to you (text-to-speech works), but it can't **hear** you (no listening server). Both halves need Python. On Windows ARM64 you'll specifically want x64 Python 3.11 since some dependencies don't ship ARM64 wheels yet.
+
 > **Don't have an operator MCP yet?** [`ops`](https://github.com/AIWander/ops) is the recommended one — public, lightweight, does file/shell work for any AI you want to give hands to. Install ops first, then come back and paste the prompt above. If you have `local`, `programmer`, or another operator MCP already, those work too.
 
 If your AI doesn't have access to your filesystem and shell, scroll down to **Manual installation** below.
