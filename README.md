@@ -226,6 +226,21 @@ The Python `server.py` works as a fallback if you'd rather not use the binary.
 
 ---
 
+## Building `voice-mcp` from source
+
+The Rust source for `voice-mcp.exe` lives in [`voice-mcp/`](voice-mcp/) at the root of this repo. To build it yourself instead of grabbing the prebuilt binary from releases:
+
+```sh
+cd voice-mcp
+cargo build --release
+```
+
+The compiled binary lands in `voice-mcp/target/release/voice-mcp.exe`. Move it wherever you like and point `claude_desktop_config.json` at it.
+
+You'll need a [Rust toolchain](https://rustup.rs/) installed. Building takes a couple of minutes on a modern machine. The release workflow on tag push builds both ARM64 and x64 Windows binaries automatically.
+
+---
+
 ## What's in the box
 
 - `voice_server.py` — the standalone HTTP server that does the actual listening, transcribing, and tone-reading
@@ -244,6 +259,31 @@ The Python `server.py` works as a fallback if you'd rather not use the binary.
 | `VOICE_CONFIG_PATH` | Where your `voice.config.toml` lives | Auto-discovered |
 | `VOICE_FFMPEG_PATH` | Where ffmpeg lives | Found via PATH |
 | `VOICE_EMOTION_LOG_DIR` | Where emotion logs get written | `~/.voice/logs/` |
+
+---
+
+## Troubleshooting
+
+**`pip install pyaudio` fails on Windows ARM64.**
+PyAudio doesn't ship native ARM64 wheels yet. Install x64 Python 3.11 alongside your ARM64 Python (Windows 11 ARM64 runs x64 Python under emulation just fine), and use the x64 interpreter to run `voice_server.py`. Or grab a precompiled ARM64 wheel from the [unofficial PyAudio wheels page](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio).
+
+**ffmpeg not found.**
+Either add ffmpeg to your `PATH` or set the `VOICE_FFMPEG_PATH` environment variable to the full path of `ffmpeg.exe`. On Windows, `winget install Gyan.FFmpeg` is the easiest install.
+
+**Python 3.13 wheel mismatch.**
+`faster-whisper` and `pyaudio` don't have Python 3.13 wheels yet at the time of writing. Stick with Python 3.11 or 3.12 until the dependency tree catches up.
+
+**Microphone permission denied.**
+Check Windows Settings → Privacy & security → Microphone, and make sure both "Microphone access" and "Let apps access your microphone" are on. If you launched `voice_server.py` from a terminal, that terminal needs mic permission too.
+
+**MCP connector toggle is off.**
+In Claude Desktop, Settings → Connectors → make sure the `voice` (Rust) or `voice-command` (Python) toggle is ON. If neither is on, your AI won't see the tools.
+
+**`voice-command` MCP can't reach the listener.**
+The MCP wrappers (`voice-mcp.exe` or `server.py`) talk to `voice_server.py` over `localhost:5123`. Make sure the listening server window is open and showing output. Restart `START_VOICE_SERVER.bat` if it's quiet.
+
+**Whisper model download stalls on first run.**
+The first time `voice_server.py` starts, faster-whisper downloads the Whisper model (~150 MB for the base model). This can stall on slow connections. Run `voice_server.py` once at install time and let the download finish before trying voice mode in your AI client.
 
 ---
 
