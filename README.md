@@ -1,5 +1,7 @@
 # Voice-Command
 
+[![CI](https://github.com/AIWander/Voice-Command/actions/workflows/ci.yml/badge.svg)](https://github.com/AIWander/Voice-Command/actions/workflows/ci.yml) [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+
 **Talk to your AI. Hear it work.**
 
 Voice-Command lets you voice-control your AI end-to-end. You say what you want done — Claude chat or another AI does it, using whatever tools, connectors, and MCPs it has access to — and narrates what it's doing as it goes. The "Command" isn't a euphemism. **Anything the AI can do, you can ask for out loud:** search the web, check your calendar, send email through your connectors, write or fix code, edit files on your computer, run shell commands, kick off automations. If it can do it typed, you can do it spoken.
