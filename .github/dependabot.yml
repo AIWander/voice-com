@@ -1,7 +1,6 @@
-# Dependabot configuration — security-only
-# Cargo/pip version update blocks removed. Dependabot Security Updates
-# (org-level toggle) handles vulnerability fixes for all ecosystems.
-# Only GitHub Actions version updates are tracked here.
+# Dependabot configuration for CI and the embedded Rust wrapper.
+# Python dependencies remain manual here; GitHub Actions and Cargo updates
+# are tracked in-repo.
 
 version: 2
 updates:
@@ -13,3 +12,11 @@ updates:
     labels:
       - "dependencies"
       - "github-actions"
+  - package-ecosystem: "cargo"
+    directory: "/voice-mcp"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "rust"
