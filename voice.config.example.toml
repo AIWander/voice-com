@@ -1,0 +1,41 @@
+# Voice-Command — example configuration
+# Copy this file to `voice.config.toml` (next to voice_server.py) or set
+# the VOICE_CONFIG_PATH environment variable to point at it.
+#
+# Both the Rust voice-mcp server and the Python voice_server.py read this
+# file on every TTS/STT call — no restart needed when you change values.
+# Per-call parameters always override what's in here.
+
+[defaults]
+speed = 1.0
+pitch = "+0Hz"
+volume = 1.0
+
+[edge-tts]
+voice = "en-GB-RyanNeural"
+speed = 1.0
+pitch = "+0Hz"
+volume = 1.0
+
+[piper]
+# Optional fallback TTS engine
+model = "en_US-lessac-medium"
+speed = 1.0
+volume = 0.55
+
+[kokoro]
+# Optional fallback TTS engine
+voice = "af_heart"
+speed = 1.0
+volume = 0.55
+
+[listen]
+# Tuned for natural conversational back-and-forth.
+# For typing-replacement / dictating long prose, raise silence_timeout_secs
+# to 5.0+ so natural pauses don't cut you off mid-thought.
+silence_timeout_secs = 3.0
+min_speech_duration_secs = 2.0
+rms_threshold = 100.0
+pre_record_enabled = true
+noise_filter_enabled = true
+listen_timeout_secs = 120
