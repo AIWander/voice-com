@@ -8,6 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- `install.ps1` — single-script installer that detects ARM64/x64, downloads `voice-mcp.exe` from the latest GitHub release, installs Python listening-server deps, and auto-wires the `voice` MCP entry into Claude Code, Claude Desktop, Gemini CLI, and LM Studio configs (backed up first). Codex TOML config gets a printed snippet to append manually. Flags: `-Verify`, `-DryRun`, `-SkipPython`, `-InstallDir <path>`, `-PythonExe <path>`.
+- README "Installer script" section documenting `install.ps1` usage and flags
+- README "Config snippets per client" section with copy-paste templates for all 5 supported clients (Claude Code, Claude Desktop, Codex Windows app, Gemini CLI, LM Studio) with exact config paths
+- README "Verify by saying hi" subsection — replaces formal health-check ceremony with a `speak` + `listen_for_speech` round-trip check that maps each half-failure to a specific cause (TTS off, MCP wiring broken, mic permission off, server not running)
+- README "Microphone permission" mention moved into the symptom-driven `Verify by saying hi` diagnostic — most installs have "Let desktop apps access your microphone" ON by default, so it doesn't need a standalone preventative callout; flagging it only when the matching symptom (beep but no transcription) appears reads less alarmist
+- README "Running headless on Windows" section covering `pythonw.exe` + `Start-Process -WindowStyle Hidden` pattern, persistence via `shell:startup` or Scheduled Task at logon, stop instructions, and resource footprint
+- `voice.config.example.toml` at repo root — documented defaults users can copy to `voice.config.toml`
 - CI workflow with smoke tests
 - Test suite scaffold (tests/test_imports.py)
 - README status badges
@@ -21,6 +28,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1 — community contact method placeholder pending)
 - Dependabot Cargo tracking for the embedded `voice-mcp/` crate
 - Link from upstream [`AIWander/voice`](https://github.com/AIWander/voice) to the standalone [`AIWander/voice-mcp`](https://github.com/AIWander/voice-mcp) Rust wrapper
+
+### Changed
+
+- README restart language softened — most MCP clients pick up new STDIO servers on next tool-list refresh, no full restart required. Only Claude Desktop and Codex Windows app are flagged as occasionally needing a full quit-and-reopen on first wire-up.
+- Documented listen defaults tuned for natural back-and-forth: `silence_timeout_secs` 4.0 → 3.0, `min_speech_duration_secs` 3.0 → 2.0. README still notes that typing-replacement / long-prose dictation benefits from raising `silence_timeout_secs` to 5.0+.
+
+### Removed
+
+- `speak_and_listen` tool from `voice-mcp` (Rust). It was a combined TTS-then-STT helper. The same flow works by calling `speak` then `listen_for_speech` separately — `speak` already blocks until playback finishes (half-duplex safety), so chaining the granular tools is equally safe and avoids parameter duplication. Reduces voice-mcp tool count from 10 to 9.
 
 ### Notes
 

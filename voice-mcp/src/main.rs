@@ -65,27 +65,6 @@ fn tool_definitions() -> Value {
                 }
             },
             {
-                "name": "speak_and_listen",
-                "description": "Speak text aloud, wait for playback to finish, then immediately listen for the next voice input.",
-                "inputSchema": {
-                    "type": "object",
-                    "properties": {
-                        "text": { "type": "string", "description": "Text to speak" },
-                        "voice": { "type": "string", "description": "Voice (default: from config)" },
-                        "speed": { "type": "number", "description": "Speech rate multiplier (default: 1.0, range 0.5-2.0)" },
-                        "pitch": { "type": "string", "description": "Pitch adjustment, e.g. '+10Hz' or '-5Hz' (default: from config)" },
-                        "volume": { "type": "number", "description": "Volume multiplier (default: 1.0, range 0.0-1.0)" },
-                        "timeout": { "type": "integer", "description": "Max seconds to wait for the reply (default: from config or 120)" },
-                        "silence_timeout": { "type": "number", "description": "Seconds of silence before cutoff (default: from config or 4.0)" },
-                        "min_speech_duration": { "type": "number", "description": "Min seconds of audio to count as speech (default: from config or 4.0)" },
-                        "rms_threshold": { "type": "number", "description": "Loudness floor 20-500 (default: from config or 100)" },
-                        "pre_record_enabled": { "type": "boolean", "description": "Capture audio before tool returns (default: from config or true)" },
-                        "noise_filter_enabled": { "type": "boolean", "description": "Apply noise filter (default: from config or true)" }
-                    },
-                    "required": ["text"]
-                }
-            },
-            {
                 "name": "listen_for_speech",
                 "description": "Listen for voice input. Returns transcribed speech.",
                 "inputSchema": {
@@ -346,17 +325,6 @@ async fn speak(text: &str, voice: &str, speed: f64, pitch: &str, volume: f64) ->
     speak_internal(text, voice, speed, pitch, volume, true).await
 }
 
-async fn speak_and_listen(text: &str, voice: &str, speed: f64, pitch: &str, volume: f64, timeout: u32, silence_timeout: f64, min_speech_duration: f64, rms_threshold: f64, pre_record_enabled: bool, noise_filter_enabled: bool) -> Result<Value, String> {
-    speak_internal(text, voice, speed, pitch, volume, true).await?;
-    tokio::time::sleep(std::time::Duration::from_millis(100)).await;
-    let heard = listen_for_speech(timeout, silence_timeout, min_speech_duration, rms_threshold, pre_record_enabled, noise_filter_enabled).await?;
-    Ok(json!({
-        "spoken": "spoke",
-        "heard": heard,
-        "session_id": get_session_id()
-    }))
-}
-
 async fn listen_for_speech(timeout: u32, silence_timeout: f64, min_speech_duration: f64, rms_threshold: f64, pre_record_enabled: bool, noise_filter_enabled: bool) -> Result<Value, String> {
     let client = reqwest::Client::new();
 
@@ -596,23 +564,6 @@ async fn handle_tool_call(name: &str, args: &Value) -> Result<Value, String> {
             Ok(json!(result))
         }
 
-        "speak_and_listen" => {
-            let text = args["text"].as_str().ok_or("text required")?;
-            let (cfg_voice, cfg_speed, cfg_pitch, cfg_volume) = get_edge_tts_defaults();
-            let voice = args["voice"].as_str().unwrap_or(&cfg_voice);
-            let speed = args["speed"].as_f64().unwrap_or(cfg_speed);
-            let pitch_str = args["pitch"].as_str().map(|s| s.to_string()).unwrap_or(cfg_pitch);
-            let volume = args["volume"].as_f64().unwrap_or(cfg_volume);
-            let lcfg = get_listen_defaults();
-            let timeout = args["timeout"].as_u64().unwrap_or(lcfg.listen_timeout_secs as u64) as u32;
-            let silence_timeout = args["silence_timeout"].as_f64().unwrap_or(lcfg.silence_timeout_secs);
-            let min_speech_duration = args["min_speech_duration"].as_f64().unwrap_or(lcfg.min_speech_duration_secs);
-            let rms_threshold = args["rms_threshold"].as_f64().unwrap_or(lcfg.rms_threshold);
-            let pre_record_enabled = args["pre_record_enabled"].as_bool().unwrap_or(lcfg.pre_record_enabled);
-            let noise_filter_enabled = args["noise_filter_enabled"].as_bool().unwrap_or(lcfg.noise_filter_enabled);
-            speak_and_listen(text, voice, speed, &pitch_str, volume, timeout, silence_timeout, min_speech_duration, rms_threshold, pre_record_enabled, noise_filter_enabled).await
-        }
-        
         "listen_for_speech" => {
             let lcfg = get_listen_defaults();
             let timeout = args["timeout"].as_u64().unwrap_or(lcfg.listen_timeout_secs as u64) as u32;
@@ -782,7 +733,6 @@ async fn main() {
 //   play_audio: 173-225 [med]
 //   speak_internal: 227-256
 //   speak: 258-262
-//   speak_and_listen: 264-273
 //   listen_for_speech: 275-306
 //   check_voice_server: 308-348
 //   checkpoint: 350-398
