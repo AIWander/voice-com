@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Voice-Command — Talk to your AI. Hear it work.</title>
+<meta name="description" content="A local voice layer for any AI that speaks MCP. Faster-whisper for ears, edge-tts for mouth. Your voice stays on your computer.">
+<meta property="og:title" content="Voice-Command">
+<meta property="og:description" content="Talk to your AI. Hear it work. A local voice layer for any AI that speaks MCP.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://voice.aiwander.ai">
+<link rel="canonical" href="https://voice.aiwander.ai">
+<style>
+:root{
+  --bg:#0f1117; --bg-2:#1a1d27; --bg-3:#232634;
+  --fg:#e6e8ee; --fg-dim:#9aa0ad; --fg-faint:#6b7280;
+  --accent:#22c55e; --accent-soft:rgba(34,197,94,0.12); --accent-border:rgba(34,197,94,0.35);
+  --rule:#2a2e3a
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:56px 24px 96px}
+.topbar{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--fg-dim);margin-bottom:64px}
+.topbar a{color:var(--fg-dim);text-decoration:none;margin-left:18px}
+.topbar a:hover{color:var(--accent)}
+.brand{font-weight:600;color:var(--fg);letter-spacing:.5px}
+.brand-mark{color:var(--accent)}
+h1.hero{font-size:42px;font-weight:600;line-height:1.15;margin:0 0 18px;letter-spacing:-.01em}
+.hero-sub{font-size:18px;color:var(--fg-dim);margin:0 0 8px;max-width:620px}
+.hero-meta{font-size:13px;color:var(--fg-faint);margin:0 0 36px;text-transform:uppercase;letter-spacing:.08em}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:56px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:8px;font-size:14px;font-weight:500;text-decoration:none;border:1px solid var(--rule);color:var(--fg);transition:border-color .15s,background .15s}
+.btn:hover{border-color:var(--accent);background:var(--accent-soft)}
+.btn-primary{background:var(--accent-soft);border-color:var(--accent-border);color:var(--accent)}
+.btn-primary:hover{background:var(--accent);color:#0a0c12}
+.section-label{font-size:12px;font-weight:600;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin:64px 0 18px;padding-bottom:10px;border-bottom:1px solid var(--rule)}
+article h2{font-size:24px;font-weight:600;margin:40px 0 14px;letter-spacing:-.005em}
+article p{margin:0 0 18px}
+article strong{color:#fff;font-weight:600}
+article em{color:#c9cdd6}
+article code{background:var(--bg-2);border:1px solid var(--rule);padding:2px 6px;border-radius:4px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+article a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent}
+article a:hover{border-bottom-color:var(--accent)}
+.card-grid{display:grid;gap:14px;margin-top:4px}
+.card{display:block;padding:18px 20px;background:var(--bg-2);border:1px solid var(--rule);border-radius:10px;text-decoration:none;color:var(--fg);transition:border-color .15s,background .15s,transform .15s}
+.card:hover{border-color:var(--accent-border);background:var(--bg-3);transform:translateX(2px)}
+.card-label{font-size:11px;color:var(--accent);font-weight:600;letter-spacing:.1em;margin-bottom:6px}
+.card-title{font-size:16px;font-weight:500;margin-bottom:6px}
+.card-blurb{font-size:14px;color:var(--fg-dim);margin:0}
+.pre{background:var(--bg-2);border:1px solid var(--rule);border-radius:8px;padding:14px 18px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13.5px;line-height:1.55;overflow-x:auto;color:var(--fg);margin:0 0 20px}
+.pre-label{display:block;font-size:11px;color:var(--fg-faint);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+ol.flow{counter-reset:step;list-style:none;padding:0;margin:0 0 24px}
+ol.flow li{position:relative;padding-left:38px;margin-bottom:14px;counter-increment:step}
+ol.flow li::before{content:counter(step);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);border:1px solid var(--accent-border);color:var(--accent);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.callout{padding:16px 20px;background:var(--bg-2);border-left:3px solid var(--accent);border-radius:6px;margin:24px 0;color:var(--fg-dim);font-size:15px}
+.callout strong{color:var(--fg)}
+footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--rule);font-size:13px;color:var(--fg-faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+footer a{color:var(--fg-faint);text-decoration:none}
+footer a:hover{color:var(--accent)}
+@media (max-width:560px){
+  .wrap{padding:32px 20px 64px}
+  h1.hero{font-size:32px}
+  .hero-sub{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span class="brand"><span class="brand-mark">●</span> voice<span class="brand-mark">.</span>aiwander.ai</span>
+    <nav>
+      <a href="https://aiwander.ai" target="_blank" rel="noopener">AIWander</a>
+      <a href="https://github.com/AIWander/Voice-Command" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+
+  <h1 class="hero">Talk to your AI.<br>Hear it work.</h1>
+  <p class="hero-sub">Voice-Command is a local voice layer for any AI that speaks MCP. Faster-whisper for ears, edge-tts for mouth. Your voice never leaves your computer.</p>
+  <p class="hero-meta">Windows · MIT-licensed · Works with Claude, Codex, Gemini, LM Studio</p>
+
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="https://github.com/AIWander/Voice-Command#the-easy-way-to-install-ask-your-ai-to-do-it">Install</a>
+    <a class="btn" href="https://github.com/AIWander/Voice-Command" target="_blank" rel="noopener">GitHub</a>
+    <a class="btn" href="https://github.com/AIWander/Voice-Command/releases/latest" target="_blank" rel="noopener">Latest release</a>
+  </div>
+
+  <div class="section-label">What it is</div>
+  <article>
+    <p>Voice-Command lets you voice-control your AI end-to-end. You say what you want done; the AI does it — using whatever tools, connectors, and MCPs it has access to — and narrates what it's doing as it goes. The "Command" isn't a euphemism. <strong>Anything the AI can do typed, you can ask for out loud:</strong> search the web, check your calendar, send email through your connectors, write or fix code, edit files, kick off automations.</p>
+    <p>The voice layer doesn't add capabilities. It changes how you reach them. Whatever connectors and MCPs you've already wired up to your AI still work the same — you're just using your mouth instead of your keyboard.</p>
+
+    <h2>Stays on your computer</h2>
+    <p>Speech-to-text, text-to-speech, audio capture, audio playback — all of it runs locally on your hardware. <strong>Voice-Command itself never reaches out to the internet.</strong> Your AI may reach out (Claude pings Anthropic, ChatGPT pings OpenAI, web search hits the web), and the AI may use other tools that reach out, but the voice layer adds zero outbound traffic. Pair it with a local model in LM Studio and the whole loop is offline.</p>
+  </article>
+
+  <div class="section-label">How a turn works</div>
+  <article>
+    <ol class="flow">
+      <li><strong>You hear a series of beeps.</strong> That's the AI's "I'm listening, your turn" cue.</li>
+      <li><strong>You talk.</strong> Anything your AI has the tools to handle counts.</li>
+      <li><strong>The AI works — and tells you out loud what it's doing as it goes.</strong> ("Checking your calendar… found three events tomorrow… drafting the reply…")</li>
+      <li><strong>You hear the beeps again.</strong> The AI's done with that turn. Your move.</li>
+    </ol>
+    <p>One thing to know: the audio flow is one-way at a time. You can't cut the AI off mid-sentence with your voice — once it's talking or working, the only way to interrupt is to click or tap in the AI's UI. The beeps are the only handoff signal.</p>
+    <p>To end a session, just tell the AI you're done. <em>"I'm done talking,"</em> <em>"let's talk later,"</em> <em>"bye for now"</em> — anything in that family. Or hit stop in your AI's UI. Both work.</p>
+  </article>
+
+  <div class="section-label">Install</div>
+  <article>
+    <p>The whole point is that you shouldn't need a CS degree to get this running. If you have Claude Desktop, Cowork, Claude Code, Codex (Windows app), Gemini CLI, or LM Studio open right now, copy this and paste it to your AI:</p>
+    <div class="pre"><span class="pre-label">paste to your AI</span>https://github.com/AIWander/Voice-Command — Can you install this MCP for us to use here, set up the voice listening server, and make me a .bat to launch it. Walk me through any restart or step I need. Tell me when everything's installed and we're ready to talk.</div>
+    <p>Your AI will grab the right <code>voice-mcp.exe</code> for your machine (ARM64 or x64), drop it in <code>C:\CPC\servers\</code>, wire it into your client's MCP config (backed up first), install the Python pieces, and write you a <code>START_VOICE_SERVER.bat</code> you can double-click whenever you want to talk.</p>
+    <p>If your AI can run scripts but isn't great at multi-step shell flows, point it at <a href="https://github.com/AIWander/Voice-Command/blob/main/install.ps1"><code>install.ps1</code></a> instead — it does the whole install loop deterministically.</p>
+
+    <h2>Verify by saying hi</h2>
+    <p>Skip the formal health check. Just use the tools themselves. Ask your AI:</p>
+    <div class="callout"><strong>"Say hi out loud and then listen for me."</strong></div>
+    <p>If you hear the AI greet you and then hear the listening <strong>beep</strong>, you're wired up end-to-end. Talk back to confirm it transcribed you. If something's broken, you'll know exactly which half:</p>
+    <ul>
+      <li><strong>No voice</strong> → TTS is off. ffmpeg missing, or your audio output device is wrong.</li>
+      <li><strong>Voice but no beep</strong> → MCP wiring worked for <code>speak</code>, not for <code>listen_for_speech</code>. Config has the entry but <code>voice_server.py</code> isn't running.</li>
+      <li><strong>Beep but no transcription</strong> → microphone permission off, or mic device not picked up. Most installs have it on by default; if not, Windows Settings → Privacy &amp; security → Microphone → "Let desktop apps access your microphone".</li>
+      <li><strong>Full round-trip works</strong> → done. Talk away.</li>
+    </ul>
+  </article>
+
+  <div class="section-label">Pairs nicely with</div>
+  <article>
+    <p>Voice-Command is most useful when your AI also has hands. These three companion MCPs are all <strong>local tools</strong> that live on your computer, all callable by voice once Voice-Command is wired up.</p>
+    <div class="card-grid">
+      <a class="card" href="https://github.com/AIWander/ops" target="_blank" rel="noopener">
+        <div class="card-label">OPS</div>
+        <div class="card-title">File and shell operations</div>
+        <p class="card-blurb">Read/write files, run commands, manage processes. The recommended operator MCP — install this first if you don't have one yet.</p>
+      </a>
+      <a class="card" href="https://github.com/AIWander/hands" target="_blank" rel="noopener">
+        <div class="card-label">HANDS</div>
+        <div class="card-title">Browser, Windows UI, vision</div>
+        <p class="card-blurb">Drive Chrome through every channel — DOM, accessibility tree, network capture, JS eval. Plus Windows UIA and vision/OCR.</p>
+      </a>
+      <a class="card" href="https://github.com/AIWander/workflow" target="_blank" rel="noopener">
+        <div class="card-label">WORKFLOW</div>
+        <div class="card-title">API discovery and replay</div>
+        <p class="card-blurb">Watch the agent work once, capture the API patterns, then replay direct HTTP forever after. OS-keyring credential vault, scheduled flows.</p>
+      </a>
+    </div>
+    <p style="margin-top:24px">Install any combination. Voice-Command is the mouth and ears; these are the rest of the body. None of them reach out unless the AI explicitly asks them to.</p>
+  </article>
+
+  <div class="section-label">Works with</div>
+  <article>
+    <p>Voice-Command is a STDIO MCP server, so it plugs into any AI client that speaks MCP. That includes:</p>
+    <ul>
+      <li><strong>Claude</strong> (chat) — Claude Desktop and the web app</li>
+      <li><strong>Cowork</strong> — Claude's desktop agent</li>
+      <li><strong>Claude Code</strong> — the CLI coding agent</li>
+      <li><strong>Codex</strong> — OpenAI's Windows app</li>
+      <li><strong>Gemini CLI</strong> — Google</li>
+      <li><strong>LM Studio</strong> — for running local models (Llama, Qwen, Mistral, whatever you've loaded up)</li>
+      <li><strong>Anything else that can call a STDIO MCP server</strong> — the protocol is the only requirement</li>
+    </ul>
+    <p>It doesn't care which model is on the other end. If your AI of choice can call MCP tools, you can talk to it.</p>
+  </article>
+
+  <footer>
+    <span>© 2026 AIWander · MIT-licensed</span>
+    <span>
+      <a href="https://github.com/AIWander/Voice-Command" target="_blank" rel="noopener">GitHub</a> ·
+      <a href="https://aiwander.ai" target="_blank" rel="noopener">AIWander.ai</a> ·
+      <a href="https://github.com/AIWander/Voice-Command/issues" target="_blank" rel="noopener">Report an issue</a>
+    </span>
+  </footer>
+
+</div>
+</body>
+</html>
