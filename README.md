@@ -181,18 +181,41 @@ Optional knobs you can pass to `/listen`:
 
 ---
 
+## Running headless on Windows
+
+If you don't want a console window sitting on screen, swap `python.exe` for `pythonw.exe` (the windowless Python host) and launch via PowerShell's hidden window flag:
+
+```powershell
+Start-Process -FilePath "C:\Python311-x64\pythonw.exe" `
+              -ArgumentList '"C:\path\to\Voice-Command\voice_server.py"' `
+              -WorkingDirectory "C:\path\to\Voice-Command" `
+              -WindowStyle Hidden
+```
+
+The server still listens on `localhost:5123` and reads `voice.config.toml` from its working directory — there's just no console to see or close. Cold start is ~6 seconds while the speech model loads, then it's idle until `/listen` is called.
+
+Resource cost at idle: ~250 MB RAM, zero CPU.
+
+To persist across reboots, drop a shortcut to that PowerShell line in `shell:startup`, or register a Scheduled Task at user logon (action: `pythonw.exe`, args: `"path\to\voice_server.py"`, run hidden as user).
+
+To stop it: `Stop-Process -Name pythonw -Force` (caution: kills *all* pythonw — narrow by PID if you have other Python tools running).
+
+---
+
 ## Tweaking the defaults
 
-Drop a file called `voice.config.toml` next to the script (or set `VOICE_CONFIG_PATH` to point at it):
+Drop a file called `voice.config.toml` next to the script (or set `VOICE_CONFIG_PATH` to point at it). A `voice.config.example.toml` is included in this repo — copy it and edit. Tuned defaults for natural back-and-forth conversation:
 
 ```toml
 [listen]
-silence_timeout_secs = 4.0
-min_speech_duration_secs = 3.0
+silence_timeout_secs = 3.0
+min_speech_duration_secs = 2.0
 rms_threshold = 100
 noise_filter_enabled = true
 pre_record_enabled = true
 ```
+
+> Earlier defaults of 4.0/3.0 felt sluggish in conversational use. For typing-replacement / dictating long prose, raise `silence_timeout_secs` to 5.0+ so natural pauses don't cut you off.
 
 It looks for config in this order:
 
