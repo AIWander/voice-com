@@ -30,6 +30,6 @@ jobs:
       - name: Rename artifact
         shell: bash
         run: mv voice-mcp/target/${{ matrix.target }}/release/voice-mcp.exe ${{ matrix.artifact }}
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           files: ${{ matrix.artifact }}
