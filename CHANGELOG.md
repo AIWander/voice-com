@@ -8,6 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- `install.ps1` — single-script installer that detects ARM64/x64, downloads `voice-mcp.exe` from the latest GitHub release, installs Python listening-server deps, and auto-wires the `voice` MCP entry into Claude Code, Claude Desktop, Gemini CLI, and LM Studio configs (backed up first). Codex TOML config gets a printed snippet to append manually. Flags: `-Verify`, `-DryRun`, `-SkipPython`, `-InstallDir <path>`, `-PythonExe <path>`.
+- README "Installer script" section documenting `install.ps1` usage and flags
+- README "Config snippets per client" section with copy-paste templates for all 5 supported clients (Claude Code, Claude Desktop, Codex Windows app, Gemini CLI, LM Studio) with exact config paths
+- README "Verify by saying hi" subsection — replaces formal health-check ceremony with a `speak` + `listen_for_speech` round-trip check that maps each half-failure to a specific cause (TTS off, MCP wiring broken, mic permission off, server not running)
+- README "Microphone permission" callout flagging the one manual step that can't be automated (Windows Settings → Privacy & security → Microphone → "Let desktop apps access your microphone")
 - README "Running headless on Windows" section covering `pythonw.exe` + `Start-Process -WindowStyle Hidden` pattern, persistence via `shell:startup` or Scheduled Task at logon, stop instructions, and resource footprint
 - `voice.config.example.toml` at repo root — documented defaults users can copy to `voice.config.toml`
 - CI workflow with smoke tests
@@ -26,6 +31,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- README restart language softened — most MCP clients pick up new STDIO servers on next tool-list refresh, no full restart required. Only Claude Desktop and Codex Windows app are flagged as occasionally needing a full quit-and-reopen on first wire-up.
 - Documented listen defaults tuned for natural back-and-forth: `silence_timeout_secs` 4.0 → 3.0, `min_speech_duration_secs` 3.0 → 2.0. README still notes that typing-replacement / long-prose dictation benefits from raising `silence_timeout_secs` to 5.0+.
 
 ### Removed
