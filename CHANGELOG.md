@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-05-15
+
 ### Added
 
 - `install.ps1` — single-script installer that detects ARM64/x64, downloads `voice-mcp.exe` from the latest GitHub release, installs Python listening-server deps, and auto-wires the `voice` MCP entry into Claude Code, Claude Desktop, Gemini CLI, and LM Studio configs (backed up first). Codex TOML config gets a printed snippet to append manually. Flags: `-Verify`, `-DryRun`, `-SkipPython`, `-InstallDir <path>`, `-PythonExe <path>`.
@@ -38,6 +40,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `speak_and_listen` tool from `voice-mcp` (Rust). It was a combined TTS-then-STT helper. The same flow works by calling `speak` then `listen_for_speech` separately — `speak` already blocks until playback finishes (half-duplex safety), so chaining the granular tools is equally safe and avoids parameter duplication. Reduces voice-mcp tool count from 10 to 9.
 
+### Dependencies
+
+- Bumped `tokio` 1.52.1 → 1.52.3 (#17), `openssl` 0.10.77 → 0.10.79 (#15), `reqwest` 0.12.28 → 0.13.3 (#14) — closes 5 HIGH + 1 medium + 1 low Dependabot security alerts on the embedded `voice-mcp` Rust crate
+- Bumped GitHub Actions: `actions/checkout` 4 → 6 (#11), `actions/setup-python` 5 → 6 (#13), `softprops/action-gh-release` 2 → 3 (#10)
+
 ### Notes
 
 - Sibling repo [`AIWander/voice-mcp`](https://github.com/AIWander/voice-mcp) holds the same Rust source as a standalone crate for users who want only the binary without the Python pieces
+- `toml` 0.8 → 1.1 major-version bump (PR #16) held for manual review — major version usually has API churn that CI smoke tests don't catch
