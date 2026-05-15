@@ -110,7 +110,10 @@ Then you're talking. Literally.
 
 > **Don't have an operator MCP yet?** [`ops`](https://github.com/AIWander/ops) is the recommended one — public, lightweight, does file/shell work for any AI you want to give hands to. Install ops first, then come back and paste the prompt above. If you have `local`, `programmer`, or another operator MCP already, those work too.
 
-If your AI doesn't have access to your filesystem and shell, scroll down to **Manual installation** below.
+If your AI doesn't have access to your filesystem and shell, scroll down to **Manual installation** below — or run `install.ps1` yourself in a PowerShell window.
+
+> ⚠️ **Microphone permission is the one thing nobody can automate.**
+> After the install, open **Windows Settings → Privacy & security → Microphone** and make sure *"Let desktop apps access your microphone"* is **ON**. If it's off, speech-to-text just returns silence — no error, no warning, no clue why nothing's transcribing. This is the single manual step in the whole install.
 
 ---
 
@@ -131,6 +134,31 @@ If your AI doesn't have access to your filesystem and shell, scroll down to **Ma
 - **ffmpeg** — for playing back the AI's voice; free, [grab it here](https://ffmpeg.org/download.html)
 
 If any of those words look scary, don't worry — your AI can handle all of this for you using the prompt at the top.
+
+---
+
+## Installer script (`install.ps1`)
+
+If your AI can run scripts but isn't great at multi-step shell flows, point it at `install.ps1`:
+
+```powershell
+.\install.ps1
+```
+
+What it does, in order:
+
+1. Detects your CPU architecture (ARM64 or x64) and downloads the matching `voice-mcp.exe` from the latest release to `C:\CPC\servers\` (override with `-InstallDir`).
+2. Installs Python listening-server dependencies with `pip install -r requirements.txt` (skip with `-SkipPython` if you only want to *talk*, not *listen*).
+3. Detects which MCP clients you have installed (Claude Code, Claude Desktop, Codex Windows, Gemini CLI, LM Studio) and adds a `voice` entry to each — backed up first.
+4. For Codex (TOML), prints the snippet to append manually — PowerShell can't round-trip TOML safely.
+5. Ends with a clear "say hi out loud and then listen for me" check so you know the round-trip works.
+
+Useful flags:
+
+- `-Verify` — report state only, change nothing
+- `-DryRun` — print what *would* happen
+- `-SkipPython` — binary + configs only
+- `-InstallDir <path>` — install the binary somewhere other than `C:\CPC\servers`
 
 ---
 
@@ -233,19 +261,90 @@ It looks for config in this order:
 - `listen_for_speech` — listen for what the user says
 - `start_voice_mode` — kick off a back-and-forth conversation
 
-For everyday use, there's a Rust version of that wrapper (`voice-mcp.exe`) that's faster and more stable. It comes as release downloads (ARM64 + x64). Add this to your client's MCP server config (e.g. `claude_desktop_config.json` for Claude Desktop):
+For everyday use, there's a Rust version of that wrapper (`voice-mcp.exe`) that's faster and more stable. It comes as release downloads (ARM64 + x64). The Python `server.py` works as a fallback if you'd rather not use the binary.
+
+### Config snippets per client
+
+Copy the snippet for your AI client into the file path shown. `install.ps1` does the wiring for you on JSON clients — these snippets are the fallback if it can't reach the file (or if you'd rather edit by hand). All paths assume `voice-mcp.exe` lives at `C:\CPC\servers\voice-mcp.exe` — change to wherever you installed it.
+
+#### Claude Code — `%USERPROFILE%\.claude\mcp.json`
 
 ```json
 {
   "mcpServers": {
     "voice": {
-      "command": "path/to/voice-mcp.exe"
+      "command": "C:\\CPC\\servers\\voice-mcp.exe"
     }
   }
 }
 ```
 
-The Python `server.py` works as a fallback if you'd rather not use the binary.
+#### Claude Desktop — `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "voice": {
+      "command": "C:\\CPC\\servers\\voice-mcp.exe"
+    }
+  }
+}
+```
+
+#### Codex (Windows app) — `%USERPROFILE%\.codex\config.toml`
+
+```toml
+[mcp_servers.voice]
+command = "C:\\CPC\\servers\\voice-mcp.exe"
+cwd = "C:\\CPC\\servers"
+```
+
+> `install.ps1` doesn't auto-edit this one — TOML round-tripping in PowerShell is fragile. Append the block manually; it's two lines.
+
+#### Gemini CLI — `%USERPROFILE%\.gemini\settings.json`
+
+```json
+{
+  "mcpServers": {
+    "voice": {
+      "command": "C:\\CPC\\servers\\voice-mcp.exe"
+    }
+  }
+}
+```
+
+(Add to the existing `mcpServers` object alongside your other entries — don't replace the whole file.)
+
+#### LM Studio — `%USERPROFILE%\.lmstudio\mcp.json`
+
+```json
+{
+  "mcpServers": {
+    "voice": {
+      "command": "C:\\CPC\\servers\\voice-mcp.exe"
+    }
+  }
+}
+```
+
+> **Other MCP-speaking clients work too.** If your AI's client isn't above but accepts STDIO MCP servers, use whichever JSON snippet matches — the three lines that matter are `"voice"`, `"command"`, and the absolute path to `voice-mcp.exe`.
+
+### Reloading your client (usually not required)
+
+Most MCP clients pick up new STDIO servers on the next tool-list refresh — no full restart. If your client doesn't see the `voice`, `listen_for_speech`, or `speak` tools after a minute, then restart it. Claude Desktop and Codex Windows app sometimes need a full quit-and-reopen on first wire-up.
+
+### Verify by saying hi
+
+Skip the formal health check — just use the tools themselves. Ask your AI:
+
+> *"Say hi out loud and then listen for me."*
+
+If you hear the AI greet you and then hear the listening **beep**, you're wired up end-to-end. Talk back and confirm it transcribed you. If something's broken, you'll know exactly which half failed:
+
+- No voice → TTS half is off (likely ffmpeg missing or audio output device wrong)
+- Voice but no beep → MCP wiring worked for speak, not for listen (config has the entry but maybe server.py isn't running)
+- Beep but no transcription → microphone permission off (see the warning earlier) OR `voice_server.py` not running OR mic not picked up
+- Full round-trip works → you're done. Talk away.
 
 ---
 
