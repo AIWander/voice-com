@@ -76,8 +76,8 @@ footer a:hover{color:var(--accent)}
     </nav>
   </div>
 
-  <h1 class="hero">Talk to your AI.<br>Hear it work.</h1>
-  <p class="hero-sub">Voice-Command is a local voice layer for any AI that speaks MCP. Faster-whisper for ears, edge-tts for mouth. Your voice never leaves your computer.</p>
+  <h1 class="hero">Talk it out.<br>Take command.<br>Voice-Command.</h1>
+  <p class="hero-sub">Talk to your AI as you cook. Command your AI as you're doing the dishes. Get updates on what your AI is doing with just your earpiece. Hands-free for hands-busy moments.</p>
   <p class="hero-meta">Windows · MIT-licensed · Works with Claude, Codex, Gemini, LM Studio</p>
 
   <div class="hero-actions">
@@ -88,11 +88,11 @@ footer a:hover{color:var(--accent)}
 
   <div class="section-label">What it is</div>
   <article>
-    <p>Voice-Command lets you voice-control your AI end-to-end. You say what you want done; the AI does it — using whatever tools, connectors, and MCPs it has access to — and narrates what it's doing as it goes. The "Command" isn't a euphemism. <strong>Anything the AI can do typed, you can ask for out loud:</strong> search the web, check your calendar, send email through your connectors, write or fix code, edit files, kick off automations.</p>
-    <p>The voice layer doesn't add capabilities. It changes how you reach them. Whatever connectors and MCPs you've already wired up to your AI still work the same — you're just using your mouth instead of your keyboard.</p>
+    <p>You talk, your AI does the thing. Whatever your AI can do typed — search the web, check your calendar, send an email through your connectors, write code, edit files on your computer, kick off automations — you can now ask for out loud. And it narrates back what it's doing as it goes, so you don't have to look at the screen.</p>
+    <p>The voice layer doesn't add new capabilities. It just changes how you reach the ones your AI already has. Same connectors. Same MCPs. Same tools. You're just using your mouth instead of your keyboard.</p>
 
     <h2>Stays on your computer</h2>
-    <p>Speech-to-text, text-to-speech, audio capture, audio playback — all of it runs locally on your hardware. <strong>Voice-Command itself never reaches out to the internet.</strong> Your AI may reach out (Claude pings Anthropic, ChatGPT pings OpenAI, web search hits the web), and the AI may use other tools that reach out, but the voice layer adds zero outbound traffic. Pair it with a local model in LM Studio and the whole loop is offline.</p>
+    <p>Your voice never leaves the machine. Speech-to-text runs through <code>faster-whisper</code> locally; text-to-speech goes through <code>edge-tts</code>. The audio capture, the playback — all of it is on your hardware. <strong>Voice-Command itself adds zero outbound traffic.</strong> Your AI still reaches out for its own model calls (Claude pings Anthropic, ChatGPT pings OpenAI), and tools it calls might too (web search, email connectors). But the voice layer stays put. Pair it with a local model in LM Studio and the whole loop is offline.</p>
   </article>
 
   <div class="section-label">How a turn works</div>
@@ -109,7 +109,7 @@ footer a:hover{color:var(--accent)}
 
   <div class="section-label">Install</div>
   <article>
-    <p>The whole point is that you shouldn't need a CS degree to get this running. If you have Claude Desktop, Cowork, Claude Code, Codex (Windows app), Gemini CLI, or LM Studio open right now, copy this and paste it to your AI:</p>
+    <p>You shouldn't need a CS degree to get this running. If you've got Claude Desktop, Cowork, Claude Code, Codex (the Windows app), Gemini CLI, or LM Studio open right now, just copy this and paste it to your AI:</p>
     <div class="pre"><span class="pre-label">paste to your AI</span>https://github.com/AIWander/Voice-Command — Can you install this MCP for us to use here, set up the voice listening server, and make me a .bat to launch it. Walk me through any restart or step I need. Tell me when everything's installed and we're ready to talk.</div>
     <p>Your AI will grab the right <code>voice-mcp.exe</code> for your machine (ARM64 or x64), drop it in <code>C:\CPC\servers\</code>, wire it into your client's MCP config (backed up first), install the Python pieces, and write you a <code>START_VOICE_SERVER.bat</code> you can double-click whenever you want to talk.</p>
     <p>If your AI can run scripts but isn't great at multi-step shell flows, point it at <a href="https://github.com/AIWander/Voice-Command/blob/main/install.ps1"><code>install.ps1</code></a> instead — it does the whole install loop deterministically.</p>
@@ -128,7 +128,7 @@ footer a:hover{color:var(--accent)}
 
   <div class="section-label">Pairs nicely with</div>
   <article>
-    <p>Voice-Command is most useful when your AI also has hands. These three companion MCPs are all <strong>local tools</strong> that live on your computer, all callable by voice once Voice-Command is wired up.</p>
+    <p>Voice-Command is most useful when your AI also has hands. Three companion MCPs — all local, all callable by voice once you're wired up — give your AI the rest of the body it needs.</p>
     <div class="card-grid">
       <a class="card" href="https://github.com/AIWander/ops" target="_blank" rel="noopener">
         <div class="card-label">OPS</div>
