@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - README "Installer script" section documenting `install.ps1` usage and flags
 - README "Config snippets per client" section with copy-paste templates for all 5 supported clients (Claude Code, Claude Desktop, Codex Windows app, Gemini CLI, LM Studio) with exact config paths
 - README "Verify by saying hi" subsection — replaces formal health-check ceremony with a `speak` + `listen_for_speech` round-trip check that maps each half-failure to a specific cause (TTS off, MCP wiring broken, mic permission off, server not running)
-- README "Microphone permission" callout flagging the one manual step that can't be automated (Windows Settings → Privacy & security → Microphone → "Let desktop apps access your microphone")
+- README "Microphone permission" mention moved into the symptom-driven `Verify by saying hi` diagnostic — most installs have "Let desktop apps access your microphone" ON by default, so it doesn't need a standalone preventative callout; flagging it only when the matching symptom (beep but no transcription) appears reads less alarmist
 - README "Running headless on Windows" section covering `pythonw.exe` + `Start-Process -WindowStyle Hidden` pattern, persistence via `shell:startup` or Scheduled Task at logon, stop instructions, and resource footprint
 - `voice.config.example.toml` at repo root — documented defaults users can copy to `voice.config.toml`
 - CI workflow with smoke tests

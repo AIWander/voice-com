@@ -290,14 +290,12 @@ if ($jsonClients) { Write-Ok "auto-wired: $(($jsonClients | ForEach-Object { $_.
 if ($tomlClients) { Write-Warn2 "manual add still needed: $(($tomlClients | ForEach-Object { $_.Name }) -join ', ')  (template printed above)" }
 
 Write-Host ""
-Write-Host "!!  Microphone permission" -ForegroundColor Yellow
-Write-Host "    Windows Settings -> Privacy & security -> Microphone — make sure 'Let desktop apps access your microphone' is ON." -ForegroundColor Yellow
-Write-Host "    Speech-to-text won't work without it, and there's no programmatic workaround." -ForegroundColor Yellow
-
-Write-Host ""
 Write-Host "==> Ready to talk" -ForegroundColor Magenta
 Write-Host "    1. Start the listening server:    START_VOICE_SERVER.bat (or pythonw voice_server.py -WindowStyle Hidden)"
 Write-Host "    2. If your client needs reloading, do that now. Most don't — try it without first."
 Write-Host "    3. Ask your AI:  'say hi out loud and then listen for me'"
 Write-Host "    If you hear a voice say hi and then hear the listen-beep, you're wired up. Talk back to confirm the round-trip."
+Write-Host ""
+Write-Host "    If you hear the beep but transcription stays silent: Windows Settings -> Privacy & security -> Microphone" -ForegroundColor DarkGray
+Write-Host "    -> confirm 'Let desktop apps access your microphone' is ON. Most installs have it on by default." -ForegroundColor DarkGray
 Write-Host ""

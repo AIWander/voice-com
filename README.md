@@ -112,9 +112,6 @@ Then you're talking. Literally.
 
 If your AI doesn't have access to your filesystem and shell, scroll down to **Manual installation** below — or run `install.ps1` yourself in a PowerShell window.
 
-> ⚠️ **Microphone permission is the one thing nobody can automate.**
-> After the install, open **Windows Settings → Privacy & security → Microphone** and make sure *"Let desktop apps access your microphone"* is **ON**. If it's off, speech-to-text just returns silence — no error, no warning, no clue why nothing's transcribing. This is the single manual step in the whole install.
-
 ---
 
 ## What it looks like when it's running
